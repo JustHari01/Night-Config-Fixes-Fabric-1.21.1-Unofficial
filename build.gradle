@@ -1,0 +1,71 @@
+plugins {
+    id 'fabric-loom' version '1.7.4'
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Compile and run the integration fixture against Night Config; do not shade these libraries into the release jar.
+    implementation "com.electronwill.night-config:core:${project.night_config_version}"
+    implementation "com.electronwill.night-config:toml:${project.night_config_version}"
+    annotationProcessor 'net.fabricmc:sponge-mixin:0.15.4+mixin.0.8.7'
+}
+
+sourceSets {
+    testmod {
+        java.setSrcDirs(['src/testmod/java'])
+        resources.setSrcDirs(['src/testmod/resources'])
+    }
+}
+
+configurations {
+    testmodCompileOnly.extendsFrom implementation, modImplementation
+}
+
+tasks.named('runClient').configure {
+    dependsOn tasks.named('testmodClasses')
+    classpath += sourceSets.testmod.output.classesDirs
+    systemProperty 'nightconfigfixes.integrationProbe', 'true'
+}
+
+loom {
+    mixin {
+        defaultRefmapName = 'nightconfigfixes_unofficial.refmap.json'
+    }
+    mods {
+        nightconfigfixes_unofficial {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.testmod
+        }
+    }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 17
+}

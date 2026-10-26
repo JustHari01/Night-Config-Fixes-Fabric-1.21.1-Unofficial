@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "nightconfigfixes_unofficial",
+  "version": "${version}",
+  "name": "Night Config Fixes (UNOFFICIAL)",
+  "description": "Fabric 1.21.1 port of the original blank-config recovery workaround.",
+  "authors": [
+    "Fuzs (original mod)",
+    "Hari / JustHari01 (Fabric 1.21.1 port)"
+  ],
+  "contact": {
+    "sources": "https://github.com/JustHari01/Night-Config-Fixes-Fabric-1.21.1-Unofficial",
+    "issues": "https://github.com/JustHari01/Night-Config-Fixes-Fabric-1.21.1-Unofficial/issues"
+  },
+  "license": "MPL-2.0",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "fuzs.nightconfigfixes.NightConfigFixes"
+    ]
+  },
+  "mixins": [
+    "nightconfigfixes_unofficial.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.5",
+    "minecraft": "1.21.1",
+    "java": ">=21"
+  },
+  "breaks": {
+    "nightconfigfixes": "*",
+    "servercore": "*",
+    "c2me-base": "*"
+  }
+}
